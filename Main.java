@@ -355,4 +355,39 @@ public class Main {
         }
         return wordIndex == word.length() && abbrIndex == abbr.length();
     }
+
+    public static String longestDiverseString(int a,  int b, int c)
+    {
+        StringBuilder result = new StringBuilder();
+        PriorityQueue<Pair<Integer, Character>> pq = new PriorityQueue<>((x,y) -> Integer.compare(y.getKey(), x.getKey()));
+        if(a > 0) pq.add(new Pair<>(a, 'a'));
+        if(b > 0) pq.add(new Pair<>(b, 'b'));
+        if(c > 0) pq.add(new Pair<>(c, 'c'));
+        int len = 0;
+
+        while(!pq.isEmpty()) {
+            // get the most frequent element
+            Pair<Integer, Character> top = pq.poll();
+            if(len >= 2 && result.charAt(len - 1) == top.getValue() && result.charAt(len - 2) == top.getValue()) {
+                // if the three consecutive element constraint is violated
+                if(!pq.isEmpty()) {
+                    Pair<Integer, Character> secondTop = pq.poll();
+                    Integer frequency = secondTop.getKey();
+                    Character value = secondTop.getValue();
+                    result.append(value);
+                    if(frequency - 1 > 0)
+                        pq.add(new Pair(frequency - 1, value));
+                    pq.add(top);
+                }
+            } else {
+                Integer frequency = top.getKey();
+                Character value = top.getValue();
+                result.append(value);
+                if(frequency - 1 > 0)
+                    pq.add(new Pair(frequency - 1, value));
+            }
+            len = result.length();
+        }
+        return result.toString();
+    } 
 }
